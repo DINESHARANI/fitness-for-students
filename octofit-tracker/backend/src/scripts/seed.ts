@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { Activity, LeaderboardEntry, Team, User, WorkoutSuggestion } from '../models';
 import { connectToDatabase } from '../db';
+
+dotenv.config();
 
 /* Seed the octofit_db database with test data */
 export async function seedDatabase() {
@@ -108,15 +111,25 @@ export async function seedDatabase() {
       description: 'Short mobility flow to improve posture.',
       difficulty: 'beginner',
       durationMinutes: 15
+    },
+    {
+      user: leo._id,
+      title: 'Strength Circuit',
+      description: 'A focused bodyweight workout for upper body strength.',
+      difficulty: 'advanced',
+      durationMinutes: 30
     }
   ]);
 
   console.log('Seed the octofit_db database with test data');
+  console.log(JSON.stringify({ users: 3, team: team.name, activities: activities.length }, null, 2));
 }
 
-seedDatabase()
-  .then(() => mongoose.disconnect())
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+if (require.main === module) {
+  seedDatabase()
+    .then(() => mongoose.disconnect())
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
+}

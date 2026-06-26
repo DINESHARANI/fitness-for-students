@@ -4,9 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedDatabase = seedDatabase;
+const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const models_1 = require("../models");
 const db_1 = require("../db");
+dotenv_1.default.config();
 /* Seed the octofit_db database with test data */
 async function seedDatabase() {
     await (0, db_1.connectToDatabase)();
@@ -106,13 +108,23 @@ async function seedDatabase() {
             description: 'Short mobility flow to improve posture.',
             difficulty: 'beginner',
             durationMinutes: 15
+        },
+        {
+            user: leo._id,
+            title: 'Strength Circuit',
+            description: 'A focused bodyweight workout for upper body strength.',
+            difficulty: 'advanced',
+            durationMinutes: 30
         }
     ]);
     console.log('Seed the octofit_db database with test data');
+    console.log(JSON.stringify({ users: 3, team: team.name, activities: activities.length }, null, 2));
 }
-seedDatabase()
-    .then(() => mongoose_1.default.disconnect())
-    .catch((error) => {
-    console.error(error);
-    process.exit(1);
-});
+if (require.main === module) {
+    seedDatabase()
+        .then(() => mongoose_1.default.disconnect())
+        .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
+}
