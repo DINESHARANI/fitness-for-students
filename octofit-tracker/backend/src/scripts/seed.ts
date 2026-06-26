@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { Activity, LeaderboardEntry, Team, User, WorkoutSuggestion } from '../models';
-import { connectToDatabase } from '../db';
+import { connectToDatabase } from '../config/database';
 
 dotenv.config();
 

@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Activity, LeaderboardEntry, Team, User, WorkoutSuggestion } from './models';
 import { getActivitiesForUser, getActivitySummary, logActivity } from './activityService';
-import { connectToDatabase } from './db';
+import { connectToDatabase } from './config/database';
 
 dotenv.config();
 

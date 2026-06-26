@@ -8,7 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const models_1 = require("./models");
 const activityService_1 = require("./activityService");
-const db_1 = require("./db");
+const database_1 = require("./config/database");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -63,7 +63,7 @@ app.get('/api/config', (_req, res) => {
     res.json({ apiBaseUrl, port });
 });
 async function start() {
-    await (0, db_1.connectToDatabase)();
+    await (0, database_1.connectToDatabase)();
     app.listen(port, () => {
         console.log(`OctoFit API listening on port ${port}`);
     });
