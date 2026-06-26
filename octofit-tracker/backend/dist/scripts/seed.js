@@ -1,0 +1,118 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.seedDatabase = seedDatabase;
+const mongoose_1 = __importDefault(require("mongoose"));
+const models_1 = require("../models");
+const db_1 = require("../db");
+/* Seed the octofit_db database with test data */
+async function seedDatabase() {
+    await (0, db_1.connectToDatabase)();
+    await Promise.all([
+        models_1.User.deleteMany({}),
+        models_1.Team.deleteMany({}),
+        models_1.Activity.deleteMany({}),
+        models_1.LeaderboardEntry.deleteMany({}),
+        models_1.WorkoutSuggestion.deleteMany({})
+    ]);
+    const [maria, jaden, leo] = await models_1.User.create([
+        {
+            username: 'maria',
+            email: 'maria@example.com',
+            passwordHash: 'hash-1',
+            age: 16,
+            fitnessLevel: 'intermediate'
+        },
+        {
+            username: 'jaden',
+            email: 'jaden@example.com',
+            passwordHash: 'hash-2',
+            age: 15,
+            fitnessLevel: 'beginner'
+        },
+        {
+            username: 'leo',
+            email: 'leo@example.com',
+            passwordHash: 'hash-3',
+            age: 17,
+            fitnessLevel: 'advanced'
+        }
+    ]);
+    const team = await models_1.Team.create({
+        name: 'Storm Squad',
+        school: 'Mergington High',
+        members: [maria._id, jaden._id, leo._id],
+        points: 120
+    });
+    await models_1.User.updateMany({}, { team: team._id });
+    const activities = await models_1.Activity.create([
+        {
+            user: maria._id,
+            type: 'running',
+            durationMinutes: 25,
+            distanceKm: 3.5,
+            caloriesBurned: 280,
+            notes: 'Morning jog',
+            pointsEarned: 30
+        },
+        {
+            user: jaden._id,
+            type: 'walking',
+            durationMinutes: 40,
+            distanceKm: 3.0,
+            caloriesBurned: 180,
+            notes: 'Walk with friends',
+            pointsEarned: 24
+        },
+        {
+            user: leo._id,
+            type: 'strength',
+            durationMinutes: 35,
+            caloriesBurned: 320,
+            notes: 'Upper body workout',
+            pointsEarned: 32
+        }
+    ]);
+    await models_1.LeaderboardEntry.create([
+        {
+            user: maria._id,
+            totalPoints: activities[0].pointsEarned,
+            week: '2026-W26'
+        },
+        {
+            user: jaden._id,
+            totalPoints: activities[1].pointsEarned,
+            week: '2026-W26'
+        },
+        {
+            user: leo._id,
+            totalPoints: activities[2].pointsEarned,
+            week: '2026-W26'
+        }
+    ]);
+    await models_1.WorkoutSuggestion.create([
+        {
+            user: maria._id,
+            title: 'Tempo Run',
+            description: 'Alternate brisk and easy laps for 20 minutes.',
+            difficulty: 'intermediate',
+            durationMinutes: 20
+        },
+        {
+            user: jaden._id,
+            title: 'Beginner Mobility',
+            description: 'Short mobility flow to improve posture.',
+            difficulty: 'beginner',
+            durationMinutes: 15
+        }
+    ]);
+    console.log('Seed the octofit_db database with test data');
+}
+seedDatabase()
+    .then(() => mongoose_1.default.disconnect())
+    .catch((error) => {
+    console.error(error);
+    process.exit(1);
+});
